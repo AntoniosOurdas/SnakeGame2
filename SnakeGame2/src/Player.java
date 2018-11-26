@@ -10,10 +10,10 @@
 
 public class Player {
 	
-	private int playerId;
-	private int score;
-	private String name;
-	private Board board;
+	int playerId;
+	int score;
+	String name;
+	Board board;
 	
 	/// Constructors
 	
