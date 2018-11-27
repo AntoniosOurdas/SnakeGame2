@@ -140,7 +140,7 @@ public class Game {
 		board.createElementBoard();
 		
 		// Array used for players
-		ArrayList<Object>players=new ArrayList<Object>();
+		ArrayList<Object>players = new ArrayList<Object>();
 		
 		players.add(new Player(0, 0, "Henry", board));
 		
@@ -148,7 +148,7 @@ public class Game {
 		
 		Object temp = new Object();
 		
-		Map<Integer,Integer> turnMap=new TreeMap<Integer,Integer>();
+		Map<Integer,Integer> turnMap = new TreeMap<Integer,Integer>();
 		
 		turnMap=setTurns(players);
 		
@@ -163,44 +163,36 @@ public class Game {
 		}
 		
 		
-		int gRound = 0; // for getRound
 		
 		boolean completed = false;
 		
-		//Round start
-		for(Map.Entry<Integer,Integer> entry:turnMap.entrySet())
-		{
-			// Move player
-			if(players.get(entry.getValue()) instanceof HeuristicPlayer) {
-				temp = players.get(entry.getValue());
-				playerTileIds[entry.getValue()] = (HeuristicPlayer)temp.getNextMove(playerTileIds[entry.getValue()]);
-			} else {
-				temp = players.get(entry.getValue());
-				playerTileIds[entry.getValue()] = temp.move(playerTileIds[entry.getValue()], roll())[0];
-			}
-			
-
-			// Check if player has reached the end (or greater)
-			if(playerTileIds[playerNo] >= board.getM() * board.getN())
+		
+		for(int i=0;i<100;i++) {
+			//Round start
+			for(Map.Entry<Integer,Integer> entry:turnMap.entrySet())
 			{
-		    	completed = true;
-		    	break;
-		    }
-			
-			
-		    
+				// Move player
+				if(players.get(entry.getValue()) instanceof HeuristicPlayer) {
+					temp = players.get(entry.getValue());
+					playerTileIds[entry.getValue()] = (HeuristicPlayer)temp.getNextMove(playerTileIds[entry.getValue()]);
+				} else {
+					temp = players.get(entry.getValue());
+					playerTileIds[entry.getValue()] = temp.move(playerTileIds[entry.getValue()], roll())[0];
+				}
+				if(playerTileIds[entry.getValue()]>=board.getM()*board.getN()) {
+					
+					playerTileIds[entry.getValue()] = board.getM() * board.getN();
+					completed=true;
+					break;
+				}
+			}
+			g.setRound(g.getRound()+1);
+			if(completed) {
+				break;
+			}
 		
-		}
-		
-		
-		System.out.println("Rounds: " + g.getRound());
-		
-		for(int i = 0; i < players.length; ++i)
-		{
-			System.out.println("Player " + (i + 1));
-			System.out.println("Score: " + players[i].getScore());
 		}
 
-		System.out.println("The winner is " + players[playerNo].getName());
+		players.get(1).statistics();
 	}
 }

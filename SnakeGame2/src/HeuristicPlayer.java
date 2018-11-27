@@ -46,14 +46,13 @@ public class HeuristicPlayer extends Player {
 				++laddersNo;
 			}
 		}
-
-		f += 0.6 * totalSteps;
 		
 		// Check if player meets an apple and add points to evaluation
 		for(int i = 0; i < board.getApples().length; ++i) {
 			if(board.getApples()[i].getAppleTileId() == (currentPos)) {
-				f += 0.4 * board.getApples()[i].getPoints();
+				
 				points += board.getApples()[i].getPoints();
+				
 				if(board.getApples()[i].getColor() == "red") {
 					++redApplesNo;
 				} else if (board.getApples()[i].getColor() == "black"){
@@ -61,7 +60,8 @@ public class HeuristicPlayer extends Player {
 				}
 			}
 		}
-	
+		
+		f = totalSteps * 0.6 + points * 0.4;
 		// Store move results
 		moveEvaluation[0] = dice;
 		moveEvaluation[1] = points;
@@ -85,11 +85,11 @@ public class HeuristicPlayer extends Player {
 		}
 		
 		// Find next move with maximum evaluation
-		double maxEvaluation = moves.get(0)[6];
+		double maxEvaluation = moves.get(0)[7];
 		int maxIndex = 0;
 		
 		for(int i = 1; i < 6; ++i) {
-			if(moves.get(i)[6] > maxEvaluation) {
+			if(moves.get(i)[7] > maxEvaluation) {
 				maxEvaluation = moves.get(i)[6];
 				maxIndex = i;
 			}
