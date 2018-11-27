@@ -146,8 +146,6 @@ public class Game {
 		
 		players.add(new HeuristicPlayer(1, 0, "Francois", board));
 		
-		Object temp = new Object();
-		
 		Map<Integer,Integer> turnMap = new TreeMap<Integer,Integer>();
 		
 		turnMap=setTurns(players);
@@ -173,11 +171,13 @@ public class Game {
 			{
 				// Move player
 				if(players.get(entry.getValue()) instanceof HeuristicPlayer) {
-					temp = players.get(entry.getValue());
-					playerTileIds[entry.getValue()] = (HeuristicPlayer)temp.getNextMove(playerTileIds[entry.getValue()]);
+					
+					playerTileIds[entry.getValue()] = ((HeuristicPlayer)players.get(playerTileIds[entry.getValue()])).getNextMove(playerTileIds[entry.getValue()]);
+				
 				} else {
-					temp = players.get(entry.getValue());
-					playerTileIds[entry.getValue()] = temp.move(playerTileIds[entry.getValue()], roll())[0];
+					
+					playerTileIds[entry.getValue()] = ((Player)players.get(playerTileIds[entry.getValue()])).move(playerTileIds[entry.getValue()], roll())[0];
+				
 				}
 				if(playerTileIds[entry.getValue()]>=board.getM()*board.getN()) {
 					
@@ -193,6 +193,6 @@ public class Game {
 		
 		}
 
-		players.get(1).statistics();
+		((HeuristicPlayer)players.get(1)).statistics();
 	}
 }
