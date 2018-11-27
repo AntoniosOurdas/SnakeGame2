@@ -8,21 +8,24 @@
 // Phone Number: 6980561699
 // email: ourdasav@ece.auth.gr
 
-public class Apple {
+public class Apple
+{
 	private int appleId;
 	private int appleTileId;
 	private String color;
 	private int points;
 	
 	// Constructors
-	public Apple() {
+	public Apple()
+	{
 		appleId = 0;
 		appleTileId = 0;
 		color = "";
 		points = 0;
 	}
 	
-	public Apple(int appleId, int appleTileId, String color, int points) {
+	public Apple(int appleId, int appleTileId, String color, int points)
+	{
 		this();
 		this.appleId = appleId;
 		this.appleTileId = appleTileId;
@@ -30,7 +33,8 @@ public class Apple {
 		this.points = points;
 	}
 	
-	public Apple(Apple a) {
+	public Apple(Apple a)
+	{
 		this(a.appleId, a.appleTileId, a.color, a.points);
 	}
 	

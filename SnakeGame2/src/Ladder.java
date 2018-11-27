@@ -16,14 +16,16 @@ public class Ladder
 	private boolean broken;
 	
 	// Constructors
-	public Ladder() {
+	public Ladder()
+	{
 		ladderId = 0;
 		upStepId = 0;
 		downStepId = 0;
 		broken = false;
 	}
 	
-	public Ladder(int ladderId, int upStepId, int downStepId, boolean broken) {
+	public Ladder(int ladderId, int upStepId, int downStepId, boolean broken)
+	{
 		this();
 		this.ladderId = ladderId;
 		this.upStepId = upStepId;
@@ -31,7 +33,8 @@ public class Ladder
 		this.broken = broken;
 	}
 	
-	public Ladder(Ladder l) {
+	public Ladder(Ladder l)
+	{
 		this(l.ladderId, l.upStepId, l.downStepId, l.broken);
 	}
 	
