@@ -39,7 +39,7 @@ public class Game {
 	
 	
 	public static Map<Integer,Integer> setTurns(ArrayList<Object> players){
-		// Test
+		
 		int rollNo=0;
 		
 		Map<Integer,Integer> map=new TreeMap<Integer,Integer>();
