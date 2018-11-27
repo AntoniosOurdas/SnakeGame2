@@ -15,23 +15,20 @@ public class Snake
 	private int tailId;
 	
 	// Constructors
-	public Snake()
-	{
+	public Snake() {
 		snakeId = 0;
 		headId = 0;
 		tailId = 0;
 	}
 	
-	public Snake(int snakeId, int headId, int tailId)
-	{
+	public Snake(int snakeId, int headId, int tailId) {
 		this();
 		this.snakeId = snakeId;
 		this.headId = headId;
 		this.tailId = tailId;
 	}
 	
-	public Snake(Snake s)
-	{
+	public Snake(Snake s) {
 		this(s.snakeId, s.headId, s.tailId);
 	}
 	
