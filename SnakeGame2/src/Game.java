@@ -1,3 +1,9 @@
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.TreeMap;
+
+
+
 // Sklavenitis Dimitrios
 // AEM: 9455
 // Phone Number: 6940064840
@@ -8,7 +14,7 @@
 // Phone Number: 6980561699
 // email: ourdasav@ece.auth.gr
 
-import java.util.Random;
+
 
 public class Game {
 	
@@ -27,49 +33,83 @@ public class Game {
 	
 	// Dice roll function
 	public static int roll()
-	{
-		Random r = new Random();
-		int n = r.nextInt(6) + 1;
-		return n;
+	{ 
+		return (int)(1+Math.random()*6) ;
 	}
 	
-	public static void sort(Player players[], int m[])
-	{
-		Player tempP = new Player();
+	
+	public static Map<Integer,Integer> setTurns(ArrayList<Object> players){
+		int rollNo=0;
 		
-		int temp = 0;
+		Map<Integer,Integer> map=new TreeMap<Integer,Integer>();
 		
-		for(int j = 0; j < m.length; ++j)
-		{
-			for(int i = 1; i < (m.length - j); ++i)
-			{
-				if(m[i] < m[i-1]) ///Re arranging array
-				{
-					// Swap dice rolls
-					temp = m[i - 1];
-					m[i - 1] = m[i];
-					m[i] = temp;
-					
-					// Swap players
-					tempP = players[i - 1];
-					players[i - 1] = players[i];
-					players[i] = tempP;
-					
-				}
-				else if(m[i] == m[i-1])
-				{
-					/// If the dice results are equal the players play in alphabetical order
-					if(players[i].getName().charAt(0)<players[i-1].getName().charAt(0))	
-					{
-						tempP=players[i-1];
-						players[i-1]=players[i];
-						players[i]=tempP;
+		int[]diceArray =new int[players.size()];
+		
+		for(int i=0;i<diceArray.length;i++) {
+			diceArray[i]=0;
+		}
+		
+		for(int i=0;i<players.size();i++) {
+		
+			rollNo=roll();
+			
+			map.put(rollNo,i);
+			
+			/// Restarts the process if two players roll the same number
+			for(int j=0;j<diceArray.length;j++) {          
+				if(rollNo==diceArray[j]) {
+					map.clear();
+					i=0;
+					for(int k=0;k<diceArray.length;k++) {
+						diceArray[i]=0;
 					}
+					rollNo=0;
 				}
 			}
-		}	
+			
+			diceArray[i]=rollNo;
+			
+		}
+		return map;
 	}
 	
+
+//	public static void sort(Player players[], int m[])
+//	{
+//		Player tempP = new Player();
+//		
+//		int temp = 0;
+//		
+//		for(int j = 0; j < m.length; ++j)
+//		{
+//			for(int i = 1; i < (m.length - j); ++i)
+//			{
+//				if(m[i] < m[i-1]) ///Re arranging array
+//				{
+//					// Swap dice rolls
+//					temp = m[i - 1];
+//					m[i - 1] = m[i];
+//					m[i] = temp;
+//					
+//					// Swap players
+//					tempP = players[i - 1];
+//					players[i - 1] = players[i];
+//					players[i] = tempP;
+//					
+//				}
+//				else if(m[i] == m[i-1])
+//				{
+//					/// If the dice results are equal the players play in alphabetical order
+//					if(players[i].getName().charAt(0)<players[i-1].getName().charAt(0))	
+//					{
+//						tempP=players[i-1];
+//						players[i-1]=players[i];
+//						players[i]=tempP;
+//					}
+//				}
+//			}
+//		}	
+//	}
 	
 	// Function used to find which player plays first according to initial dice roll
 	public static  Player[] initialRoll(Player players[])
@@ -82,7 +122,7 @@ public class Game {
 			diceRes[i] = roll();
 		}
 		
-		sort(players,diceRes);
+	
 	
 		return players;
 	}
@@ -100,34 +140,45 @@ public class Game {
 		board.createElementBoard();
 		
 		// Array used for players
-		Player players[] = new Player[2];
-		players[0] = new Player(0, 0, "Henry", board);
-		players[1] = new Player(1, 0, "Francois", board);
+		ArrayList<Object>players=new ArrayList<Object>();
+		
+		players.add(new Player(0, 0, "Henry", board));
+		
+		players.add(new HeuristicPlayer(1, 0, "Francois", board));
+		
+		Object temp = new Object();
+		
+		Map<Integer,Integer> turnMap=new TreeMap<Integer,Integer>();
+		
+		turnMap=setTurns(players);
 		
 		// Array with each player's Tile Id (position on board)
-		int playerTileIds[] = new int[players.length];
+		int playerTileIds[] = new int[players.size()];
 		
 		// Initialize all players
 		// Put them in 0 position
 		for(int i = 0; i < playerTileIds.length; i++)
 		{
-			playerTileIds[i] = 0;
+			playerTileIds[i] = 1;
 		}
 		
-		int playerNo = 0; // Players marker
-		
-		// Re-arranges the player array
-		players = initialRoll(players);
 		
 		int gRound = 0; // for getRound
 		
 		boolean completed = false;
 		
-		// Main gameplay part
-		while(!completed)
+		//Round start
+		for(Map.Entry<Integer,Integer> entry:turnMap.entrySet())
 		{
 			// Move player
-			playerTileIds[playerNo] = players[playerNo].move(playerTileIds[playerNo], roll())[0];   /// Player moves
+			if(players.get(entry.getValue()) instanceof HeuristicPlayer) {
+				temp = players.get(entry.getValue());
+				playerTileIds[entry.getValue()] = (HeuristicPlayer)temp.getNextMove(playerTileIds[entry.getValue()]);
+			} else {
+				temp = players.get(entry.getValue());
+				playerTileIds[entry.getValue()] = temp.move(playerTileIds[entry.getValue()], roll())[0];
+			}
+			
 
 			// Check if player has reached the end (or greater)
 			if(playerTileIds[playerNo] >= board.getM() * board.getN())
@@ -136,18 +187,10 @@ public class Game {
 		    	break;
 		    }
 			
-			// Move to next player
-			++playerNo;
-		    
-			if(playerNo >= players.length) // Cycling players
-		    {
-		    	playerNo = 0;
-		    	gRound = g.getRound();
-		    	g.setRound(gRound + 1);
-		    }
+			
 		    
 		
-		    }
+		}
 		
 		
 		System.out.println("Rounds: " + g.getRound());
