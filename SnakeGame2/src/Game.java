@@ -47,6 +47,8 @@ public class Game {
 	public static Map<Integer, Integer> setTurns(ArrayList<Object> players) {
 		int rollNo = 0;
 
+		boolean found=false;
+		
 		Map<Integer, Integer> map = new TreeMap<Integer, Integer>();
 
 		int[] diceArray = new int[players.size()];
@@ -65,15 +67,17 @@ public class Game {
 			for (int j = 0; j < diceArray.length; j++) {
 				if (rollNo == diceArray[j]) {
 					map.clear();
-					i = 0;
+					i = -1;
+					found=true;
 					for (int k = 0; k < diceArray.length; k++) {
-						diceArray[i] = 0; /// gg
+						diceArray[k] = 0; /// gg
 					}
-					rollNo = 0;
+					
 				}
 			}
-
-			diceArray[i] = rollNo;
+			if (!found) {
+				diceArray[i] = rollNo;
+			}
 
 		}
 		return map;
