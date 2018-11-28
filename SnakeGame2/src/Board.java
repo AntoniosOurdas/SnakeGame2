@@ -18,12 +18,14 @@ public class Board {
 	private Apple[] apples;
 	
 	// Constructors
-	public Board() {
+	public Board()
+	{
 		N = 0;
 		M = 0;
 	}
 	
-	public Board(int N, int M, int snakesNo, int laddersNo, int applesNo) {
+	public Board(int N, int M, int snakesNo, int laddersNo, int applesNo)
+	{
 		this.N = N;
 		this.M = M;
 		
@@ -44,24 +46,28 @@ public class Board {
 			apples[i] = new Apple();
 	}
 	
-	public Board(Board b) {
+	public Board(Board b)
+	{
 		// Create an object same as b
 		N = b.N;
 		M = b.M;
 		tiles = b.getTiles();
 		
 		snakes = new Snake[b.getSnakes().length];
-		for(int i = 0; i < b.getSnakes().length; ++i) {
+		for(int i = 0; i < b.getSnakes().length; ++i)
+		{
 			snakes[i] = new Snake(b.getSnakes()[i]);
 		}
 		
 		ladders = new Ladder[b.getLadders().length];
-		for(int i = 0; i < b.getLadders().length; ++i) {
+		for(int i = 0; i < b.getLadders().length; ++i)
+		{
 			ladders[i] = new Ladder(b.getLadders()[i]);
 		}
 		
 		apples = new Apple[b.getApples().length];
-		for(int i = 0; i < b.getApples().length; ++i) {
+		for(int i = 0; i < b.getApples().length; ++i)
+		{
 			apples[i] = new Apple(b.getApples()[i]);
 		}
 	}
@@ -81,34 +87,43 @@ public class Board {
 	// Array setters set a specific element of array
 	
 	// Tiles
-	public void setTiles(int id, int i, int j) {
-		if((i > -1 && i < N) && (j > -1 && j < M)) {
+	public void setTiles(int id, int i, int j) 
+	{
+		if((i > -1 && i < N) && (j > -1 && j < M))
+		{
 			tiles[i][j] = id;
 		}
 	}
 	
 	// Snakes
-	public void setSnakes(Snake s, int i) {
-		if(i > -1 && i < N) {
+	public void setSnakes(Snake s, int i)
+	{
+		if(i > -1 && i < N)
+		{
 			snakes[i] = s;
 		}
 	}
 	
 	// Ladders
-	public void setLadders(Ladder l, int i) {
-		if(i > -1 && i < N) {
+	public void setLadders(Ladder l, int i)
+	{
+		if(i > -1 && i < N)
+		{
 			ladders[i] = l;
 		}
 	}
 	
 	// Apples
-	public void setApples(Apple a, int i) {
-		if(i > -1 && i < N) {
+	public void setApples(Apple a, int i)
+	{
+		if(i > -1 && i < N)
+		{
 			apples[i] = a;
 		}
 	}
 	
-	public void createBoard() {
+	public void createBoard()
+	{
 		// Filling in tiles board
 		// We start from Nth line and move up
 		// Size variable is used to fill in ids in tiles table
@@ -117,15 +132,20 @@ public class Board {
 		int Size = 1;
 		boolean flag = true;
 
-		for(int i = N - 1; i > -1; --i) {
-			if(flag) {
-				for(int j = 0; j < M; ++j) {
+		for(int i = N - 1; i > -1; --i)
+		{
+			if(flag)
+			{
+				for(int j = 0; j < M; ++j)
+				{
 					tiles[i][j] = Size;
 					++Size;
 				}
 				flag = !flag; // switch flag
-			} else {
-				for(int j = M - 1; j > -1; --j) {
+			} else
+			{
+				for(int j = M - 1; j > -1; --j)
+				{
 					tiles[i][j] = Size;
 					++Size;
 				}
@@ -149,14 +169,16 @@ public class Board {
 		boolean snakeExists = true, tailAboveHead = false;
 		
 		// Do it for all snakes[] array elements (Snake objects)
-		for(int i = 0; i < snakes.length; ++i) {
+		for(int i = 0; i < snakes.length; ++i)
+		{
 			// We don't know if the snake exists
 			// So at first we assume the new snake does exist
 			// This way the program enters the while loop th first time
 			snakeExists = true;
 			
 			// Create a random snake until it is valid
-			while(snakeExists || tailAboveHead) {
+			while(snakeExists || tailAboveHead)
+			{
 				// Here we assume the new random snake doesn't exists
 				// And its head is above tail
 				snakeExists = false;
@@ -166,14 +188,17 @@ public class Board {
 				snakes[i] = new Snake(snakesId, (int)(Math.random() * (N * M - 1) + 1), (int)(Math.random() * (N * M - 1) + 1));
 				
 				// Check if head of snake is above tail (if not then tailAboveHead = true)
-				if(snakes[i].getHeadId() <= snakes[i].getTailId()) {
+				if(snakes[i].getHeadId() <= snakes[i].getTailId())
+				{
 					tailAboveHead = true;
 					continue;
 				}
 
 				// Check if snake already exists (same head or tail (at least))
-				for(int j = 0; j < snakesInitialized; ++j) {
-					if(snakes[j].getHeadId() == snakes[i].getHeadId() || snakes[j].getTailId() == snakes[i].getTailId()) {
+				for(int j = 0; j < snakesInitialized; ++j)
+				{
+					if(snakes[j].getHeadId() == snakes[i].getHeadId() || snakes[j].getTailId() == snakes[i].getTailId())
+					{
 						snakeExists = true;
 						break;
 					}
@@ -196,12 +221,14 @@ public class Board {
 		boolean ladderExists = true, upStepAboveDownStep = false, ladderSnakeOverlap = false;
 				
 		// Do it for all ladders[] array elements (Ladder objects)
-		for(int i = 0; i < ladders.length; ++i) {
+		for(int i = 0; i < ladders.length; ++i)
+		{
 			// Same thing as above in snakes initialization
 			ladderExists = true;
 					
 			// Create a random ladder until it is valid
-			while(ladderExists || upStepAboveDownStep || ladderSnakeOverlap) {
+			while(ladderExists || upStepAboveDownStep || ladderSnakeOverlap)
+			{
 				ladderExists = false;
 				upStepAboveDownStep = false;
 				ladderSnakeOverlap = false;
@@ -210,14 +237,17 @@ public class Board {
 				ladders[i] = new Ladder(laddersId, (int)(Math.random() * (N * M - 1) + 1), (int)(Math.random() * (N * M - 1) + 1), false);
 				
 				// Check if the downStep of ladder is above upStep (if not then upStepAboveDownStep = true)
-				if(ladders[i].getDownStepId() <= ladders[i].getUpStepId()) {
+				if(ladders[i].getDownStepId() <= ladders[i].getUpStepId())
+				{
 					upStepAboveDownStep = true;
 					continue;
 				}
 
 				// Check if ladder already exists (same upStep or downStep (at least))
-				for(int j = 0; j < laddersInitialized; ++j) {
-					if(ladders[j].getUpStepId() == ladders[i].getUpStepId() || ladders[j].getDownStepId() == ladders[i].getDownStepId()) {
+				for(int j = 0; j < laddersInitialized; ++j)
+				{
+					if(ladders[j].getUpStepId() == ladders[i].getUpStepId() || ladders[j].getDownStepId() == ladders[i].getDownStepId())
+					{
 						ladderExists = true;
 						break;
 					}
@@ -229,8 +259,10 @@ public class Board {
 				// Check if head of snake is the same as ladder base
 				// Because in that case the player won't be able to decide where to go
 				// Also, if snake tail is the same with ladder top there is no problem
-				for(int j = 0; j < snakes.length; ++j) {
-					if(ladders[i].getUpStepId() == snakes[j].getHeadId()) {
+				for(int j = 0; j < snakes.length; ++j)
+				{
+					if(ladders[i].getUpStepId() == snakes[j].getHeadId())
+					{
 						ladderSnakeOverlap = true;
 						break;
 					}
@@ -252,10 +284,12 @@ public class Board {
 		boolean appleExists = true, snakeOverlap = false;
 			
 		// Do it for all apples
-		for(int i = 0; i < apples.length; ++i) {
+		for(int i = 0; i < apples.length; ++i)
+		{
 			appleExists = true;
 				
-			while(appleExists || snakeOverlap) {
+			while(appleExists || snakeOverlap)
+			{
 				// Initialize only appleId and appleTileId
 				// Then we get to initialize color and points
 				apples[i] = new Apple(applesId, (int)(Math.random() * (N * M - 1) + 1), "", 0);
@@ -264,9 +298,11 @@ public class Board {
 				snakeOverlap = false;
 		
 				
-				for(int j = 0; j < applesInitialized; ++j) {
+				for(int j = 0; j < applesInitialized; ++j)
+				{
 					// Check if appleTaleId already exists
-					if(apples[j].getAppleTileId() == apples[i].getAppleTileId()) {
+					if(apples[j].getAppleTileId() == apples[i].getAppleTileId())
+					{
 						appleExists = true;
 						break;
 					}
@@ -275,7 +311,8 @@ public class Board {
 				if(appleExists)
 					continue;
 				
-				for(int j = 0; j < snakes.length; ++j) {
+				for(int j = 0; j < snakes.length; ++j)
+				{
 					// Check if apple is upon snake head
 					if(snakes[j].getHeadId() == apples[i].getAppleTileId())
 					{
@@ -290,18 +327,22 @@ public class Board {
 			Random r = new Random();
 			
 			// Pick a random color from red or black
-			if(r.nextInt(2) == 0) {
+			if(r.nextInt(2) == 0)
+			{
 				apples[i].setColor("red");
 			}
-			else {
+			else
+			{
 				apples[i].setColor("black");
 			}
 				
 			// Set points according to color
-			if(apples[i].getColor() == "red") {
+			if(apples[i].getColor() == "red")
+			{
 				apples[i].setPoints((int)(Math.random() * 5 + 5));
 			}
-			else {
+			else
+			{
 				apples[i].setPoints(- (int)(Math.random() * 5 + 5));
 			}
 			
@@ -313,15 +354,18 @@ public class Board {
 	}
 	
 	
-	public void createElementBoard() {
+	public void createElementBoard()
+	{
 		// Allocate memory  for String arrays
 		String[][] elementBoardSnakes = new String[N][M];
 		String[][] elementBoardLadders = new String[N][M];
 		String[][] elementBoardApples = new String[N][M];
 		
 		// Fill in every element with "___" character
-		for(int i = 0; i < N; ++i) {
-			for(int j = 0; j < M; ++j) {
+		for(int i = 0; i < N; ++i)
+		{
+			for(int j = 0; j < M; ++j)
+			{
 				elementBoardSnakes[i][j] = "___";
 				elementBoardLadders[i][j] = "___";
 				elementBoardApples[i][j] = "___";
@@ -336,7 +380,8 @@ public class Board {
 		int x = 0, y = 0, id = 0;
 		
 		// Snakes
-		for(int i = 0; i < snakes.length; ++i) {
+		for(int i = 0; i < snakes.length; ++i)
+		{
 			// Once for head
 			id = snakes[i].getHeadId();
 			
@@ -379,9 +424,11 @@ public class Board {
 
 			// Here we make the division (id - 1) % M and not id % M for the same reason as in row search
 
-			if(y % 2 == 0) {
+			if(y % 2 == 0)
+			{
 				x = (id - 1) % M + 1;
-			} else {
+			} else
+			{
 				x = M - (id - 1) % M;
 			}
 
@@ -398,7 +445,8 @@ public class Board {
 			if(y % 2 == 0)
 			{
 				x = (id - 1) % M + 1;
-			} else {
+			} else
+			{
 				x = M - (id - 1) % M;
 			}
 			
@@ -408,14 +456,17 @@ public class Board {
 		
 		
 		// Snakes
-		for(int i = 0; i < ladders.length; ++i) {
+		for(int i = 0; i < ladders.length; ++i)
+		{
 			// Once for top
 			id = ladders[i].getDownStepId();
 			y = (id - 1) / M;
 			
-			if(y % 2 == 0) {
+			if(y % 2 == 0)
+			{
 				x = (id - 1) % M + 1;
-			} else {
+			} else
+			{
 				x = M - (id - 1) % M;
 			}
 			
@@ -426,9 +477,11 @@ public class Board {
 			id = ladders[i].getUpStepId();
 			y = (id - 1) / M;
 			
-			if(y % 2 == 0) {
+			if(y % 2 == 0)
+			{
 				x = (id - 1) % M + 1;
-			} else {
+			} else
+			{
 				x = M - (id - 1) % M;
 			}
 			
@@ -437,40 +490,50 @@ public class Board {
 		}
 		
 		// Apples
-		for(int i = 0; i < apples.length; ++i) {
+		for(int i = 0; i < apples.length; ++i)
+		{
 			id = apples[i].getAppleTileId();
 			y = (id - 1) / M;
 			
 			if(y % 2 == 0)
 			{
 				x = (id - 1) % M + 1;
-			} else {
+			} else
+			{
 				x = M - (id - 1) % M;
 			}
 			
 			y = N - y;
 			
 			// Check for color
-			if(apples[i].getColor() == "red") {
+			if(apples[i].getColor() == "red")
+			{
 				elementBoardApples[y - 1][x - 1] = "AR" + apples[i].getAppleId();
-			} else if(apples[i].getColor() == "black") {
+			}
+			else if(apples[i].getColor() == "black")
+			{
 				elementBoardApples[y - 1][x - 1] = "AB" + apples[i].getAppleId();
 			}
+			
 		}
 
 		// Print arrays next to each other
-		for(int i = 0; i < N; ++i) {
-			for(int j = 0; j < M; ++j) {
+		for(int i = 0; i < N; ++i)
+		{
+			for(int j = 0; j < M; ++j)
+			{
 				System.out.print(elementBoardSnakes[i][j] + " ");
 			}
 			System.out.print("   ");
 			
-			for(int j = 0; j < M; ++j) {
+			for(int j = 0; j < M; ++j)
+			{
 				System.out.print(elementBoardLadders[i][j] + " ");
 			}
 			System.out.print("   ");
 			
-			for(int j = 0; j < M; ++j) {
+			for(int j = 0; j < M; ++j)
+			{
 				System.out.print(elementBoardApples[i][j] + " ");
 			}
 			

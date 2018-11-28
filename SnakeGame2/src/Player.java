@@ -17,7 +17,8 @@ public class Player {
 	
 	/// Constructors
 	
-	public Player() {
+	public Player()
+	{
 		playerId = 0;
 		score = 0;
 		name = "";
@@ -25,7 +26,8 @@ public class Player {
 	}
 	
 	
-	public Player(int playerId, int score, String name, Board board) {
+	public Player(int playerId, int score, String name, Board board)
+	{
 		this.playerId = playerId;
 		this.score = score;
 		this.name = name;
@@ -51,10 +53,12 @@ public class Player {
 	public void setBoard(Board board) {this.board = board;}
 	
 	
-	public int[] move(int id, int  die) {
+	public int[] move(int id, int  die)						
+	{
 		int stats[] = new int[5];                           
 		
-		for(int i = 0; i < stats.length; i++) {
+		for(int i = 0; i < stats.length; i++)
+		{
 			stats[i] = 0;
 		}
 		
@@ -67,8 +71,10 @@ public class Player {
 		stats[0] = id + die;
 		 
 		// Snake check
-		for(int i = 0; i < board.getSnakes().length; ++i) {
-			if(stats[0] == board.getSnakes()[i].getHeadId()) { 
+		for(int i = 0; i < board.getSnakes().length; ++i)
+		{
+			if(stats[0] == board.getSnakes()[i].getHeadId())
+			{ 
 				stats[0] = board.getSnakes()[i].getTailId();
 				System.out.println(name + " has been bitten by a snake!! oh noooooo!");
 				System.out.println();
@@ -77,8 +83,10 @@ public class Player {
 		} // Snake check done
 		
 		// Ladder check
-		for(int i = 0; i < board.getLadders().length; ++i) {
-			if(stats[0] == board.getLadders()[i].getUpStepId() && !board.getLadders()[i].getBroken()) {
+		for(int i = 0; i < board.getLadders().length; ++i)
+		{
+			if(stats[0] == board.getLadders()[i].getUpStepId() && !board.getLadders()[i].getBroken())
+			{
 				stats[0] = board.getLadders()[i].getDownStepId();
 				System.out.println(name + " has climbed a ladder...crack(that ladder is broken now)");
 				System.out.println();
@@ -88,13 +96,16 @@ public class Player {
 		} // Ladder check done
 		 
 		// Apple check
-		for(int i = 0; i < board.getApples().length; ++i) {
-			if(stats[0] == board.getApples()[i].getAppleTileId()) {
+		for(int i = 0; i < board.getApples().length; ++i)
+		{
+			if(stats[0] == board.getApples()[i].getAppleTileId())
+			{
 				System.out.println(name + " has just eaten a " + board.getApples()[i].getColor() + " apple");
 				System.out.println();
 				score += board.getApples()[i].getPoints();
 				board.getApples()[i].setPoints(0);
-			    if(board.getApples()[i].getColor() == "red") {
+			    if(board.getApples()[i].getColor() == "red")
+			    {
 			    	++stats[3];
 			    }
 			    else

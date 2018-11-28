@@ -13,58 +13,51 @@ public class HeuristicPlayer extends Player {
 	
 	public double[] evaluate(int currentPos, int dice) {
 		
-		// Create a copy of the original board in order to examine the player's possible move
-		// This way the original board isn't affected
-		Board tempBoard = new Board(board);
+		double[] moveEvaluation = new double[8];
 		
-		// This array stores information about the player's possible move
-		// It's contents are:
-		// moveEvaluation[0]: dice number
-		// moveEvaluation[1]: total points gained by this move
-		// moveEvaluation[2]: total steps made by the player in this move
-		// moveEvaluation[3]: evaluation function result
-		// The evaluation function is: f = 0.6 * steps + 0.4 * points
-		double[] moveEvaluation = new double[4];
-		
-		// Value used for storing evaluation function result
+		// Value used for storing evaluation results
 		double f = 0.0;
 		
-		// Points gained by this move
-		int points = 0;
+		// Points gained by this move, snakes, ladders and apples the player met
+		int points = 0, snakesNo = 0, laddersNo = 0, redApplesNo = 0, blackApplesNo = 0;
 		
-		// Total steps made by player in this move
-		// Initial steps are the dice number
+		// Initial steps is the dice number
 		int totalSteps = dice;
-		
-		// Move player by the dice number
 		currentPos += dice;
 		
 		// Check if player meets a snake
-		for(int i = 0; i < tempBoard.getSnakes().length; ++i) {
-			if(tempBoard.getSnakes()[i].getHeadId() == currentPos) {
-				// Subtract from total steps, since the player is moving backwards
-				totalSteps -= (tempBoard.getSnakes()[i].getHeadId() - tempBoard.getSnakes()[i].getTailId());
+		for(int i = 0; i < board.getSnakes().length; ++i) {
+			if(board.getSnakes()[i].getHeadId() == currentPos) {
+				// Add to total steps
+				totalSteps += (board.getSnakes()[i].getHeadId() - board.getSnakes()[i].getTailId());
 				// Move player to snake tail
-				currentPos = tempBoard.getSnakes()[i].getTailId();
+				currentPos = board.getSnakes()[i].getTailId();
+				++snakesNo;
 			}
 		}
 		
 		// Check if player meets a ladder
-		for(int i = 0; i < tempBoard.getLadders().length; ++i) {
-			if(tempBoard.getLadders()[i].getUpStepId() == currentPos && !tempBoard.getLadders()[i].getBroken()) {
+		for(int i = 0; i < board.getLadders().length; ++i) {
+			if(board.getLadders()[i].getUpStepId() == currentPos) {
 				// Add to total steps
-				totalSteps += (tempBoard.getLadders()[i].getDownStepId() - tempBoard.getLadders()[i].getUpStepId());
+				totalSteps += (board.getLadders()[i].getDownStepId() - board.getLadders()[i].getUpStepId());
 				// Move player to ladder top
-				currentPos = tempBoard.getLadders()[i].getDownStepId();
-				tempBoard.getLadders()[i].setBroken(true);
+				currentPos = board.getLadders()[i].getDownStepId();
+				++laddersNo;
 			}
 		}
 		
 		// Check if player meets an apple and add points to evaluation
-		for(int i = 0; i < tempBoard.getApples().length; ++i) {
-			if(tempBoard.getApples()[i].getAppleTileId() == (currentPos)) {
-				points += tempBoard.getApples()[i].getPoints();
-				tempBoard.getApples()[i].setPoints(0);
+		for(int i = 0; i < board.getApples().length; ++i) {
+			if(board.getApples()[i].getAppleTileId() == (currentPos)) {
+				
+				points += board.getApples()[i].getPoints();
+				
+				if(board.getApples()[i].getColor() == "red") {
+					++redApplesNo;
+				} else if (board.getApples()[i].getColor() == "black"){
+					++blackApplesNo;
+				}
 			}
 		}
 		
@@ -73,15 +66,18 @@ public class HeuristicPlayer extends Player {
 		moveEvaluation[0] = dice;
 		moveEvaluation[1] = points;
 		moveEvaluation[2] = totalSteps;
-		moveEvaluation[3] = f;
+		moveEvaluation[3] = redApplesNo;
+		moveEvaluation[4] = blackApplesNo;
+		moveEvaluation[5] = snakesNo;
+		moveEvaluation[6] = laddersNo;
+		moveEvaluation[7] = f;
 		
 		return moveEvaluation;
 	}
 	
 	
 	public int getNextMove(int currentPos) {
-		// List in which every possible move is stored as an array of doubles
-		// This array matches the array described int the above evaluate() function
+		// List in which every possible move of the player is stored as an array of doubles
 		ArrayList<double[]> moves = new ArrayList<double[]>();
 		
 		for(int i = 0; i < 6; ++i) {
@@ -89,48 +85,32 @@ public class HeuristicPlayer extends Player {
 		}
 		
 		// Find next move with maximum evaluation
-		double maxEvaluation = moves.get(0)[3];
+		double maxEvaluation = moves.get(0)[7];
 		int maxIndex = 0;
 		
 		for(int i = 1; i < 6; ++i) {
-			if(moves.get(i)[3] > maxEvaluation) {
-				maxEvaluation = moves.get(i)[3];
+			if(moves.get(i)[7] > maxEvaluation) {
+				maxEvaluation = moves.get(i)[6];
 				maxIndex = i;
 			}
 		}
 		
-		// A Double array is used in order to convert doubles to int
-		// This array matches the array chosen from moves ArrayList
-		Double[] temp = new Double[4];
+		// Convert double to int in order to update path variable
+		Double[] d = new Double[7];
 		
-		for(int i = 0; i < 4; ++i) {
-			temp[i] = moves.get(maxIndex)[i];
+		for(int i = 0; i < 7; ++i) {
+			d[i] = moves.get(maxIndex)[i];
 		}
 		
-		// This array is used to store the nextMove information
-		// (Final position of the player and number of snakes, ladders, red apples, black apples
-		int[] tempMove = new int[5];
-		
-		// Make the actual move of the player and save results in tempMove array
-		tempMove = move(currentPos, temp[0].intValue());
-		
-		// This array will be added to path ArrayList
-		// We fill in the array with information about the next move, from the temp and tempMove and temp
 		int[] nextMove = new int[7];
+		for(int i = 0; i < 7; ++i) {
+			nextMove[i] = d[i].intValue();
+		}
 		
-		nextMove[0] = temp[0].intValue(); // Dice number
-		nextMove[1] = temp[1].intValue(); // Points gained by player
-		nextMove[2] = temp[2].intValue(); // Total steps of player
-		nextMove[2] = tempMove[3]; // Number of red apples the player ate
-		nextMove[3] = tempMove[4]; // Number of black apples the player ate
-		nextMove[4] = tempMove[1]; // Number of snakes that bit the player
-		nextMove[5] = tempMove[2]; // Number of ladders that bit the player
-		
-		// Add array to path variable
 		path.add(nextMove);
 		
-		// Return the player's new position
-		return tempMove[0];
+		// Return next move
+		return (currentPos + nextMove[2]);
 	}
 	
 	
