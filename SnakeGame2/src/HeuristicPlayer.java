@@ -84,19 +84,20 @@ public class HeuristicPlayer extends Player {
 		ArrayList<double[]> moves = new ArrayList<double[]>();
 
 		// Temporary double array used in order to save the move to moves ArrayList
-		double[] tempMove = new double[2];
+		double[] tempMove;
 
 		// Fill in ArrayList with every possible move of the player
 		// (call the function for dices from 1 to 6)
 		for (int i = 1; i <= 6; ++i) {
 			// Temporarily store move
+			tempMove = new double[2];
 			tempMove[0] = i;
 			tempMove[1] = evaluate(currentPos, i);
-
+			
 			// And save it to the list
 			moves.add(tempMove);
 		}
-
+		
 		// Find next move with maximum evaluation
 		//
 		// Maximum evaluation value
