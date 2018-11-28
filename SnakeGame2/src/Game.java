@@ -1,7 +1,3 @@
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.TreeMap;
-
 // Sklavenitis Dimitrios
 // AEM: 9455
 // Phone Number: 6940064840
@@ -11,6 +7,10 @@ import java.util.TreeMap;
 // AEM: 9358
 // Phone Number: 6980561699
 // email: ourdasav@ece.auth.gr
+
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class Game {
 
@@ -40,25 +40,36 @@ public class Game {
 		return (int) (1 + Math.random() * 6);
 	}
 
+	// Function used to evaluate who is the winner according to
+	// its position on the board and its score
 	public static double wf(int tiles, int score) {
 		return tiles * 0.6 + score * 0.4;
 	}
 
+	// setTurns function
 	public static Map<Integer, Integer> setTurns(ArrayList<Object> players) {
+
 		int rollNo = 0;
 
+		// Create map to be returned
 		Map<Integer, Integer> map = new TreeMap<Integer, Integer>();
 
+		// This array contains the dice of every player
 		int[] diceArray = new int[players.size()];
 
+		// Initialize dice numbers of all players
 		for (int i = 0; i < diceArray.length; i++) {
 			diceArray[i] = 0;
 		}
 
+		// Roll dice for each player and check if any two or more players
+		// have rolled the same dice number
 		for (int i = 0; i < players.size(); i++) {
 
+			// Make the roll
 			rollNo = roll();
 
+			// Put it in the map
 			map.put(rollNo, ((Player) players.get(i)).getPlayerId());
 
 			/// Restarts the process if two players roll the same number
@@ -67,7 +78,7 @@ public class Game {
 					map.clear();
 					i = 0;
 					for (int k = 0; k < diceArray.length; k++) {
-						diceArray[i] = 0; /// gg
+						diceArray[i] = 0;
 					}
 					rollNo = 0;
 				}
@@ -142,10 +153,15 @@ public class Game {
 			}
 
 		}
+		
 		double wfMax = 0;
+		
 		int winnerId = 0;
+		
 		double number = 0;
+		
 		for (int i = 0; i < players.size(); i++) {
+		
 			number = wf(playerTileIds[((Player) players.get(i)).getPlayerId()], ((Player) players.get(i)).getScore());
 			if (number > wfMax) {
 				wfMax = number;
@@ -161,17 +177,15 @@ public class Game {
 		System.out.println("Total number of rounds played: " + g.getRound());
 		for (int i = 0; i < players.size(); i++) {
 			System.out
-					.println(((Player) players.get(i)).getName() + "'s score:" + ((Player) players.get(i)).getScore());
+					.println(((Player) players.get(i)).getName() + "'s score: " + ((Player) players.get(i)).getScore());
 			System.out.println();
 		}
 
-		System.out.println("The winner is " + ((Player) players.get(winnerId)).getName());
+		System.out.print("The winner is " + ((Player) players.get(winnerId)).getName());
 
 		if (((Player) players.get(winnerId)).getPlayerId() == 1) {
 			System.out.println(" as expected.");
 		}
-		System.out.println(playerTileIds[0]);
-
 	}
 
 }
