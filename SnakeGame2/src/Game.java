@@ -47,7 +47,7 @@ public class Game {
 	public static Map<Integer, Integer> setTurns(ArrayList<Object> players) {
 		int rollNo = 0;
 
-		boolean found=false;
+		boolean found=true;
 		
 		Map<Integer, Integer> map = new TreeMap<Integer, Integer>();
 
@@ -59,26 +59,23 @@ public class Game {
 
 		for (int i = 0; i < players.size(); i++) {
 
-			rollNo = roll();
-
-			map.put(rollNo, ((Player) players.get(i)).getPlayerId());
-
-			/// Restarts the process if two players roll the same number
-			for (int j = 0; j < diceArray.length; j++) {
-				if (rollNo == diceArray[j]) {
-					map.clear();
-					i = -1;
-					found=true;
-					for (int k = 0; k < diceArray.length; k++) {
-						diceArray[k] = 0; /// gg
+			
+			
+			while (found) {
+				rollNo = roll();
+				found = false;
+				for (int j = 0; j < diceArray.length; j++) {
+					if (rollNo == diceArray[j]) {
+						found = true;
+						break;
 					}
-					
 				}
-			}
-			if (!found) {
-				diceArray[i] = rollNo;
-			}
 
+			
+
+				}
+			map.put(rollNo, ((Player) players.get(i)).getPlayerId());
+			diceArray[i] = rollNo;			
 		}
 		return map;
 	}
