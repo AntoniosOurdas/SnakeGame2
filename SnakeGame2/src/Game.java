@@ -170,7 +170,6 @@ public class Game {
 			}
 		}
 		
-		//Hello
 		// Print statistics of HeuristicPlayer
 		((HeuristicPlayer) players.get(1)).statistics();
 		System.out.println();
