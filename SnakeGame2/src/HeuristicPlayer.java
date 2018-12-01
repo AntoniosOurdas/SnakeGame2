@@ -1,3 +1,4 @@
+
 // Sklavenitis Dimitrios
 // AEM: 9455
 // Phone Number: 6940064840
@@ -11,16 +12,16 @@
 import java.util.ArrayList;
 
 public class HeuristicPlayer extends Player {
-	ArrayList<int[]> path;
+	ArrayList<Integer[]> path;
 
 	public HeuristicPlayer() {
 		super();
-		path = new ArrayList<int[]>();
+		path = new ArrayList<Integer[]>();
 	}
 
 	public HeuristicPlayer(int playerId, int score, String name, Board tempBoard) {
 		super(playerId, score, name, tempBoard);
-		path = new ArrayList<int[]>();
+		path = new ArrayList<Integer[]>();
 	}
 
 	public double evaluate(int currentPos, int dice) {
@@ -31,9 +32,10 @@ public class HeuristicPlayer extends Player {
 		// Points gained by this move
 		int points = 0;
 
-		// Temporary tempBoard used for move evaluation
+		// Temporary Board used for move evaluation
 		Board tempBoard = new Board(board);
 
+		// Total number of steps the player has made by this move
 		// Initial steps is the dice number
 		int totalSteps = dice;
 		currentPos += dice;
@@ -41,7 +43,8 @@ public class HeuristicPlayer extends Player {
 		// Check if player meets a snake
 		for (int i = 0; i < tempBoard.getSnakes().length; ++i) {
 			if (tempBoard.getSnakes()[i].getHeadId() == currentPos) {
-				// Subtract from total steps, because the player moves backwards
+				// Subtract from total steps, because the player moves backwards (i.e. its id on
+				// the board decreases)
 				totalSteps -= (tempBoard.getSnakes()[i].getHeadId() - tempBoard.getSnakes()[i].getTailId());
 				// Move player to snake tail
 				currentPos = tempBoard.getSnakes()[i].getTailId();
@@ -50,8 +53,9 @@ public class HeuristicPlayer extends Player {
 
 		// Check if player meets a ladder
 		for (int i = 0; i < tempBoard.getLadders().length; ++i) {
-			if (tempBoard.getLadders()[i].getUpStepId() == currentPos) {
-				// Add to total steps, because the player moves upwards
+			if (tempBoard.getLadders()[i].getUpStepId() == currentPos && !tempBoard.getLadders()[i].getBroken()) {
+				// Add to total steps, because the player moves upwards (i.e. its id on the
+				// board decreases)
 				totalSteps += (tempBoard.getLadders()[i].getDownStepId() - tempBoard.getLadders()[i].getUpStepId());
 				// Move player to ladder top
 				currentPos = tempBoard.getLadders()[i].getDownStepId();
@@ -78,34 +82,35 @@ public class HeuristicPlayer extends Player {
 		// List in which every possible move of the player is stored
 		// as an array of doubles
 		// The first element is the dice number
-		// And the second element is the evaluation function evaluation for that
-		// specific function
+		// And the second element is the evaluation function value for that
+		// specific dice number
 
 		ArrayList<double[]> moves = new ArrayList<double[]>();
 
-		// Temporary double array used in order to save the move to moves ArrayList
+		// Temporary double array used in order to save the move to "moves" ArrayList
 		double[] tempMove;
 
 		// Fill in ArrayList with every possible move of the player
-		// (call the function for dices from 1 to 6)
+		// (i.e. call the function for dices from 1 to 6)
 		for (int i = 1; i <= 6; ++i) {
 			// Temporarily store move
-			tempMove = new double[2];
-			tempMove[0] = i;
-			tempMove[1] = evaluate(currentPos, i);
-			
+			tempMove = new double[2]; // Allocate memory for the new move that will be stored in ArrayList
+			tempMove[0] = i; // save dice number which is the same as i
+			tempMove[1] = evaluate(currentPos, i); // save evaluation function value (f(i))
+
 			// And save it to the list
 			moves.add(tempMove);
 		}
-		
-		// Find next move with maximum evaluation
+
+		// Find move with maximum evaluation
 		//
 		// Maximum evaluation value
 		double maxEvaluation = moves.get(0)[1];
-		// Index int the array List of the move with maximum evaluation
+		// Index in the array List of the move with maximum evaluation
 		int maxIndex = 0;
 
 		// Check all elements of ArrayList to find the one with maximum evaluation
+		// We assume the first element is the maximum
 		for (int i = 1; i < 6; ++i) {
 			if (moves.get(i)[1] > maxEvaluation) {
 				maxEvaluation = moves.get(i)[1];
@@ -113,16 +118,25 @@ public class HeuristicPlayer extends Player {
 			}
 		}
 
-		// Temporary array used to save the player's movement information
-		int[] nextMove = new int[7];
+		// Temporary arrays used to save the player's movement information
+		Integer[] nextMove = new Integer[8];
+		int[] temp = new int[8];
 
 		// Call move function to make the actual movement of the player
-		// This function has been modified in order to return an array with 8 elements
+		// This function has been modified in order to return an array of ints with 8
+		// elements
+		// Then the ints are converted to Integer objects in order to be saved in the
+		// path variable
 
-		nextMove = move(currentPos, maxIndex + 1);
+		temp = move(currentPos, maxIndex + 1);
+
+		// Conversion
+		for (int i = 0; i < 8; ++i) {
+			nextMove[i] = temp[i];
+		}
 
 		// Add array to path ArrayList
-		path.add(move(currentPos, maxIndex + 1));
+		path.add(nextMove);
 
 		// Return next move position
 		// (i.e. the player's position after he made the move)
@@ -133,12 +147,11 @@ public class HeuristicPlayer extends Player {
 	public void statistics() {
 
 		// Variables used to calculate total number of tiles with snake heads, ladder
-		// bases,
-		// red and black apples the player has encountered
+		// bases, red and black apples the player has encountered
 
 		int snakeHead = 0, ladderBase = 0, redApple = 0, blackApple = 0;
 
-		// Print every information of every movement the player has made
+		// Print information of every movement the player has made
 		for (int i = 0; i < path.size(); ++i) {
 			System.out.println("Round " + (i + 1));
 			System.out.println("Dice Number: " + path.get(i)[0]);
@@ -150,16 +163,15 @@ public class HeuristicPlayer extends Player {
 			System.out.println("Ladders climbed: " + path.get(i)[6]);
 			System.out.println("New position: " + path.get(i)[7]);
 
-			// Count total numbers
+			// Count total red apples, black apples, snake heads and ladders
 			redApple += path.get(i)[3];
 			blackApple += path.get(i)[4];
 			snakeHead += path.get(i)[5];
 			ladderBase += path.get(i)[6];
 			System.out.println();
 		}
-
 		// Print total statistics
-		
+
 		System.out.println("==============================");
 
 		System.out.println("Statistics:");
