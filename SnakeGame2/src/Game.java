@@ -169,7 +169,8 @@ public class Game {
 				winnerId = ((Player) players.get(i)).getPlayerId();
 			}
 		}
-
+		
+		//Hello
 		// Print statistics of HeuristicPlayer
 		((HeuristicPlayer) players.get(1)).statistics();
 		System.out.println();

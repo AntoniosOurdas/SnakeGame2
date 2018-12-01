@@ -170,7 +170,7 @@ public class HeuristicPlayer extends Player {
 			ladderBase += path.get(i)[6];
 			System.out.println();
 		}
-
+		//Hello
 		// Print total statistics
 
 		System.out.println("==============================");
