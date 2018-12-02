@@ -24,7 +24,11 @@ public class HeuristicPlayer extends Player {
 		path = new ArrayList<Integer[]>();
 	}
 	
-	ArrayList<Integer[]> getPath(){return path;}
+	// Getter
+	public ArrayList<Integer[]> getPath(){return path;}
+	
+	// Setter
+	public void setPath(ArrayList<Integer[]> path){this.path = path;}
 
 	public double evaluate(int currentPos, int dice) {
 
