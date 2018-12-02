@@ -23,6 +23,8 @@ public class HeuristicPlayer extends Player {
 		super(playerId, score, name, tempBoard);
 		path = new ArrayList<Integer[]>();
 	}
+	
+	ArrayList<Integer[]> getPath(){return path;}
 
 	public double evaluate(int currentPos, int dice) {
 
@@ -180,5 +182,7 @@ public class HeuristicPlayer extends Player {
 		System.out.println("The player came across " + ladderBase + " ladder bases");
 		System.out.println("The player came across " + redApple + " red apples");
 		System.out.println("The player came across " + blackApple + " black apples");
+		System.out.println("==============================");
+		System.out.println();
 	}
 }
